@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Capacitación y Control de Asistencia - ITB</title>
+    <style>
+        :root {
+            --itb-azul: #002B49;
+            --itb-dorado: #f39c12;
+            --itb-bg: #f8fafc;
+            --itb-texto: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--itb-bg);
+            color: var(--itb-texto);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ENCABEZADO INSTITUCIONAL */
+        header {
+            background-color: var(--itb-azul);
+            color: white;
+            border-bottom: 4px solid var(--itb-dorado);
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: white;
+            color: var(--itb-azul);
+            font-weight: 900;
+            font-size: 1.4rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+        }
+
+        .title-area h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .title-area p {
+            font-size: 0.75rem;
+            color: var(--itb-dorado);
+            font-weight: 600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-nav {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-nav.active {
+            background-color: var(--itb-dorado);
+            color: #000;
+        }
+
+        .btn-nav.inactive {
+            background-color: #334155;
+            color: white;
+        }
+
+        .btn-nav.inactive:hover {
+            background-color: #475569;
+        }
+
+        /* ALERTA DE ÉXITO */
+        #alert-success {
+            display: none;
+            background-color: #059669;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        main {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+            flex-grow: 1;
+        }
+
+        /* TARJETAS DE ÁREAS */
+        .areas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-area {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .card-area:hover {
+            border-color: var(--itb-azul);
+        }
+
+        .card-area.active {
+            border-color: var(--itb-azul);
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 2px var(--itb-azul);
+        }
+
+        .card-area span {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #2563eb;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .card-area h3 {
+            font-size: 1.05rem;
+            color: var(--itb-azul);
+            margin-bottom: 4px;
+        }
+
+        .card-area p {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* SECCIÓN CAPACITACIÓN GRID */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 992px) {
+            .content-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .box {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .box h2 {
+            font-size: 1.1rem;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .box p.desc {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        /* VIDEO CONTAINER */
+        .video-wrapper {
+            background: black;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            padding-top: 56.25%; /* Aspect Ratio 16:9 */
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* BARRA DE PROGRESO */
+        .progress-container {
+            margin-top: 12px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* LISTA DE MÓDULOS */
+        .module-item {
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #f1f5f9;
+            margin-bottom: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .module-item:hover {
+            background: #f8fafc;
+        }
+
+        .module-item.active {
+            background: #eff6ff;
+            border-color: var(--itb-azul);
+        }
+
+        .module-item-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .module-item-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* FORMULARIO */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 9px;
+            font-size: 0.85rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--itb-azul);
+            box-shadow: 0 0 0 2px rgba(0, 43, 73, 0.1);
+        }
+
+        .checkbox-box {
+            background: #f8fafc;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-box label {
+            display: flex;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--itb-azul);
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #001a2e;
+        }
+
+        /* TABLA Y ADMIN */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--itb-azul);
+            color: white;
+            padding: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge-tag {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* PIE DE PÁGINA */
+        footer {
+            background: #1e293b;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+            border-top: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENCABEZADO -->
+    <header>
+        <div class="header-container">
+            <div class="logo-area">
+                <div class="logo-badge">ITB</div>
+                <div class="title-area">
+                    <h1>INSTITUTO SUPERIOR TECNOLÓGICO BOLIVARIANO</h1>
+                    <p>Plataforma Institucional de Capacitación SST / SO / Trabajo Social</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button id="btn-portal" class="btn-nav active" onclick="cambiarSeccion('capacitacion')">Portal del Colaborador</button>
+                <button id="btn-admin" class="btn-nav inactive" onclick="cambiarSeccion('admin')">Panel Técnico SST / Registro</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ALERTA DE ÉXITO -->
+    <div id="alert-success">¡Asistencia registrada exitosamente en la plataforma institucional del ITB!</div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+        <!-- VISTA DE CAPACITACIÓN -->
+        <div id="seccion-capacitacion">
+            <!-- SELECCIÓN DE ÁREAS -->
+            <div class="areas-grid">
+                <div id="card-sst" class="card-area active" onclick="seleccionarArea('sst')">
+                    <span>Área 1</span>
+                    <h3>Seguridad y Salud en el Trabajo</h3>
+                    <p>Normativa nacional, matriz de riesgos, EPPs y prevención laboral.</p>
+                </div>
+                <div id="card-so" class="card-area" onclick="seleccionarArea('so')">
+                    <span style="color:#059669;">Área 2</span>
+                    <h3 style="color:#065f46;">Salud Ocupacional (SO)</h3>
+                    <p>Vigilancia médica, ergonomía, pausas activas y primeros auxilios.</p>
+                </div>
+                <div id="card-ts" class="card-area" onclick="seleccionarArea('ts')">
+                    <span style="color:#7c3aed;">Área 3</span>
+                    <h3 style="color:#5b21b6;">Trabajo Social</h3>
+                    <p>Riesgos psicosociales, bienestar laboral y protocolo de acoso.</p>
+                </div>
+            </div>
+
+            <!-- CONTENIDO PRINCIPAL: VIDEO Y FORMULARIO -->
+            <div class="content-grid">
+                <!-- COLUMNA IZQUIERDA -->
+                <div>
+                    <div class="box">
+                        <h2 id="video-titulo">Cargando módulo...</h2>
+                        <p id="video-desc" class="desc">Cargando descripción...</p>
+                        
+                        <div class="video-wrapper">
+                            <video id="player" controls ontimeupdate="actualizarProgreso(this)">
+                                <source id="video-src" src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                                Su navegador no soporta reproducción de video HTML5.
+                            </video>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Progreso de visualización</span>
+                                <span id="progreso-texto">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="progreso-fill" class="progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <h3 style="font-size:0.85rem; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:10px;">Módulos disponibles en esta área</h3>
+                        <div id="lista-modulos"></div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: REGISTRO -->
+                <div>
+                    <div class="box">
+                        <h3 style="font-size:1.1rem; color:var(--itb-azul); font-weight:700; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">Registro y Firma de Asistencia</h3>
+                        <form id="form-registro" onsubmit="registrarAsistencia(event)">
+                            <div class="form-group">
+                                <label>Nombres y Apellidos *</label>
+                                <input type="text" id="reg-nombre" required placeholder="Ej: Lcdo. Carlos Mendoza">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cédula de Identidad *</label>
+                                <input type="text" id="reg-cedula" required placeholder="Ej: 0928374615">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Facultad / Departamento *</label>
+                                <select id="reg-depto" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cargo Institucional *</label>
+                                <input type="text" id="reg-cargo" required placeholder="Ej: Docente / Analista TICs">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Correo Institucional (Opcional)</label>
+                                <input type="email" id="reg-email" placeholder="usuario@itb.edu.ec">
+                            </div>
+
+                            <div class="checkbox-box">
+                                <label>
+                                    <input type="checkbox" id="reg-declara" required>
+                                    <span>Declaro haber visualizado y asimilado el contenido de la capacitación SST en cumplimiento del Reglamento Interno de Seguridad y Salud del ITB.</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn-submit">Confirmar y Registrar Asistencia</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA DE ADMINISTRACIÓN -->
+        <div id="seccion-admin" style="display: none;">
+            <div class="box" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h2>Panel de Control y Control de Asistencia SST</h2>
+                    <p class="desc" style="margin-bottom:0;">Registro histórico de capacitaciones del personal del ITB para auditorías laborales e IESS.</p>
+                </div>
+                <button onclick="exportarCSV()" style="padding: 10px 16px; background:#059669; color:white; font-weight:700; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem;">
+                    Descargar Reporte Excel / CSV
+                </button>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="box" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Buscar por Cédula, Nombre o Video</label>
+                    <input type="text" id="filter-text" placeholder="Escriba para filtrar..." oninput="renderTablaAsistencia()">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Filtrar por Facultad o Departamento</label>
+                    <select id="filter-depto" onchange="renderTablaAsistencia()">
+                        <option value="">Todos los departamentos</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- TABLA DE VERIFICACIÓN -->
+            <div class="box" style="padding:0; overflow:hidden;">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha y Hora</th>
+                                <th>Cédula</th>
+                                <th>Nombre</th>
+                                <th>Departamento / Facultad</th>
+                                <th>Cargo</th>
+                                <th>Área</th>
+                                <th>Video Visto</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-asistencias">
+                            <!-- Se renderiza con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- AGREGAR NUEVO VIDEO -->
+            <div class="box">
+                <h3 style="font-size:1rem; font-weight:700; color:var(--itb-azul); margin-bottom:12px;">Agregar Nuevo Video a la Plataforma</h3>
+                <form onsubmit="agregarVideo(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                        <label>Título de la Capacitación</label>
+                        <input type="text" id="add-titulo" required placeholder="Ej: Ergonomía en Oficina">
+                    </div>
+                    <div class="form-group">
+                        <label>Área Correspondiente</label>
+                        <select id="add-area">
+                            <option value="sst">Seguridad y Salud en el Trabajo (SST)</option>
+                            <option value="so">Salud Ocupacional (SO)</option>
+                            <option value="ts">Trabajo Social</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>URL o Enlace del Video (MP4 / Web)</label>
+                        <input type="url" id="add-url" required placeholder="https://servidor.itb.edu.ec/videos/ejemplo.mp4">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Descripción Breve</label>
+                        <input type="text" id="add-desc" placeholder="Resumen del contenido del video...">
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <button type="submit" class="btn-submit" style="width: auto; padding: 10px 20px;">Guardar Video en la Plataforma</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer>
+        <p><strong>Instituto Superior Tecnológico Bolivariano de Tecnología (ITB)</strong></p>
+        <p>Departamento de Seguridad y Salud en el Trabajo & Salud Ocupacional | Cumplimiento Decreto Ejecutivo 2393 / MDT</p>
+    </footer>
+
+    <!-- LÓGICA JAVASCRIPT NATIVA SIN LIBRERÍAS EXTERNAS -->
+    <script>
+        // LISTA DE DEPARTAMENTOS Y FACULTADES
+        const DEPARTAMENTOS = [
+            "FASSS (Facultad de Salud y Servicios Sociales)",
+            "FACES (Facultad de Ciencias Administrativas y Económicas)",
+            "FATV (Facultad de Técnica y Tecnologías)",
+            "CONDUCE",
+            "TÚ LICENCIA",
+            "Talento Humano",
+            "Secretaría",
+            "Financiero",
+            "TICs",
+            "Comercial y Ventas",
+            "Marketing",
+            "Admisiones",
+            "Arte y Cultura",
+            "Asuntos Estudiantiles",
+            "Bienestar Institucional",
+            "Bibliotecas",
+            "Mantenimiento (Limpieza)",
+            "Seguridad Física"
+        ];
+
+        // MÓDULOS DE CAPACITACIÓN INICIALES
+        let videos = [
+            // SST
+            { id: 1, area: "sst", titulo: "Módulo 1: Identificación y Evaluación de Riesgos Laborales", desc: "Matriz de riesgos, factores físicos, mecánicos y ergonómicos según Decreto 2393.", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            { id: 2, area: "sst", titulo: "Módulo 2: Uso Correcto y Mantenimiento de EPPs", desc: "Selección, entrega reglamentaria y conservación de Equipos de Protección Individual.", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            { id: 3, area: "sst", titulo: "Módulo 3: Plan de Emergencias y Evacuación ITB", desc: "Rutas de evacuación, brigadas institucionales y puntos de encuentro.", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            
+            // Salud Ocupacional
+            { id: 4, area: "so", titulo: "Módulo 1: Vigilancia Epidemiológica y Exámenes Médicos", desc: "Protocolo de exámenes de ingreso, periódicos y retiro conforme Acuerdo Ministerial 1404.", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            { id: 5, area: "so", titulo: "Módulo 2: Primeros Auxilios y Soporte Vital Básico", desc: "Atención inmediata de emergencias médicas en instalaciones educativas.", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            { id: 6, area: "so", titulo: "Módulo 3: Pausas Activas y Ergonomía en la Oficina", desc: "Prevención de desórdenes musculoesqueléticos en personal administrativo y docente.", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+
+            // Trabajo Social
+            { id: 7, area: "ts", titulo: "Módulo 1: Prevención de Riesgos Psicosociales", desc: "Salud mental laboral, manejo del estrés e integración institucional.", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            { id: 8, area: "ts", titulo: "Módulo 2: Protocolo de Prevención de Acoso Laboral", desc: "Lineamientos del Ministerio del Trabajo (AM MDT-2020-244) para una convivencia respetuosa.", url: "https://www.w3schools.com/html/mov_bbb.mp4" }
+        ];
+
+        let areaActual = "sst";
+        let videoActual = videos[0];
+        let progresoActual = 0;
+        let asistencias = [];
+
+        // INICIALIZACIÓN
+        document.addEventListener("DOMContentLoaded", () => {
+            poblarDesplegables();
+            seleccionarArea("sst");
+            renderTablaAsistencia();
+        });
+
+        function poblarDesplegables() {
+            const selectReg = document.getElementById("reg-depto");
+            const selectFilter = document.getElementById("filter-depto");
+
+            DEPARTAMENTOS.forEach(d => {
+                const opt1 = document.createElement("option");
+                opt1.value = d;
+                opt1.textContent = d;
+                selectReg.appendChild(opt1);
+
+                const opt2 = document.createElement("option");
+                opt2.value = d;
+                opt2.textContent = d;
+                selectFilter.appendChild(opt2);
+            });
+        }
+
+        function cambiarSeccion(seccion) {
+            document.getElementById("seccion-capacitacion").style.display = seccion === "capacitacion" ? "block" : "none";
+            document.getElementById("seccion-admin").style.display = seccion === "admin" ? "block" : "none";
+
+            document.getElementById("btn-portal").className = seccion === "capacitacion" ? "btn-nav active" : "btn-nav inactive";
+            document.getElementById("btn-admin").className = seccion === "admin" ? "btn-nav active" : "btn-nav inactive";
+        }
+
+        function seleccionarArea(area) {
+            areaActual = area;
+            
+            // Estilos de tarjetas
+            document.getElementById("card-sst").className = area === "sst" ? "card-area active" : "card-area";
+            document.getElementById("card-so").className = area === "so" ? "card-area active" : "card-area";
+            document.getElementById("card-ts").className = area === "ts" ? "card-area active" : "card-area";
+
+            // Filtrar videos
+            const videosArea = videos.filter(v => v.area === area);
+            if (videosArea.length > 0) {
+                cargarVideo(videosArea[0]);
+            }
+            renderListaModulos(videosArea);
+        }
+
+        function cargarVideo(video) {
+            videoActual = video;
+            document.getElementById("video-titulo").textContent = video.titulo;
+            document.getElementById("video-desc").textContent = video.desc;
+            
+            const player = document.getElementById("player");
+            const source = document.getElementById("video-src");
+            source.src = video.url;
+            player.load();
+
+            progresoActual = 0;
+            actualizarBarraUI(0);
+
+            // Resaltar en lista
+            renderListaModulos(videos.filter(v => v.area === areaActual));
+        }
+
+        function renderListaModulos(lista) {
+            const contenedor = document.getElementById("lista-modulos");
+            contenedor.innerHTML = "";
+
+            lista.forEach(v => {
+                const div = document.createElement("div");
+                div.className = `module-item ${v.id === videoActual.id ? 'active' : ''}`;
+                div.onclick = () => cargarVideo(v);
+                div.innerHTML = `
+                    <div>
+                        <div class="module-item-title">${v.titulo}</div>
+                        <div class="module-item-sub">${v.desc}</div>
+                    </div>
+                    <span style="font-size:0.7rem; background:#cbd5e1; padding:2px 6px; border-radius:4px; font-weight:600;">Ver</span>
+                `;
+                contenedor.appendChild(div);
+            });
+        }
+
+        function actualizarProgreso(videoElement) {
+            if (videoElement.duration) {
+                const pct = Math.floor((videoElement.currentTime / videoElement.duration) * 100);
+                progresoActual = pct;
+                actualizarBarraUI(pct);
+            }
+        }
+
+        function actualizarBarraUI(pct) {
+            document.getElementById("progreso-texto").textContent = pct + "%";
+            document.getElementById("progreso-fill").style.width = pct + "%";
+        }
+
+        function registrarAsistencia(e) {
+            e.preventDefault();
+
+            const nombre = document.getElementById("reg-nombre").value;
+            const cedula = document.getElementById("reg-cedula").value;
+            const depto = document.getElementById("reg-depto").value;
+            const cargo = document.getElementById("reg-cargo").value;
+            const email = document.getElementById("reg-email").value || "N/A";
+            const declara = document.getElementById("reg-declara").checked;
+
+            if (!declara) {
+                alert("Debe aceptar la declaración jurada de capacitación.");
+                return;
+            }
+
+            const registro = {
+                id: Date.now(),
+                fechaHora: new Date().toLocaleString("es-EC"),
+                cedula,
+                nombre,
+                departamento: depto,
+                cargo,
+                email,
+                area: areaActual.toUpperCase(),
+                videoTitulo: videoActual.titulo,
+                estado: progresoActual >= 90 ? "100% (Completado)" : progresoActual + "% (Parcial)"
+            };
+
+            asistencias.unshift(registro);
+
+            // Mostrar mensaje de éxito
+            const alertBox = document.getElementById("alert-success");
+            alertBox.style.display = "block";
+            setTimeout(() => { alertBox.style.display = "none"; }, 4000);
+
+            // Reiniciar formulario
+            document.getElementById("form-registro").reset();
+            renderTablaAsistencia();
+        }
+
+        function renderTablaAsistencia() {
+            const tbody = document.getElementById("tabla-asistencias");
+            tbody.innerHTML = "";
+
+            const filtroText = document.getElementById("filter-text").value.toLowerCase();
+            const filtroDepto = document.getElementById("filter-depto").value;
+
+            const filtrados = asistencias.filter(a => {
+                const matchText = a.nombre.toLowerCase().includes(filtroText) || 
+                                  a.cedula.includes(filtroText) || 
+                                  a.videoTitulo.toLowerCase().includes(filtroText);
+                const matchDepto = filtroDepto === "" || a.departamento === filtroDepto;
+                return matchText && matchDepto;
+            });
+
+            if (filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:#94a3b8;">No hay registros de asistencia registrados.</td></tr>`;
+                return;
+            }
+
+            filtrados.forEach(a => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${a.fechaHora}</td>
+                    <td><strong>${a.cedula}</strong></td>
+                    <td>${a.nombre}</td>
+                    <td>${a.departamento}</td>
+                    <td>${a.cargo}</td>
+                    <td><span class="badge-tag">${a.area}</span></td>
+                    <td>${a.videoTitulo}</td>
+                    <td><span style="color:#059669; font-weight:bold;">${a.estado}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function agregarVideo(e) {
+            e.preventDefault();
+            const titulo = document.getElementById("add-titulo").value;
+            const area = document.getElementById("add-area").value;
+            const url = document.getElementById("add-url").value;
+            const desc = document.getElementById("add-desc").value || "Capacitación institucional ITB.";
+
+            const nuevo = {
+                id: Date.now(),
+                area,
+                titulo,
+                desc,
+                url
+            };
+
+            videos.push(nuevo);
+            alert("Video agregado exitosamente.");
+            document.getElementById("add-titulo").value = "";
+            document.getElementById("add-url").value = "";
+            document.getElementById("add-desc").value = "";
+
+            if (area === areaActual) {
+                renderListaModulos(videos.filter(v => v.area === areaActual));
+            }
+        }
+
+        function exportarCSV() {
+            if (asistencias.length === 0) {
+                alert("No hay registros disponibles para exportar.");
+                return;
+            }
+
+            let csv = "ID,FechaHora,Cedula,Nombre,Departamento,Cargo,Email,Area,Video,Estado\n";
+            asistencias.forEach(a => {
+                csv += `"${a.id}","${a.fechaHora}","${a.cedula}","${a.nombre}","${a.departamento}","${a.cargo}","${a.email}","${a.area}","${a.videoTitulo}","${a.estado}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", `Reporte_Asistencia_SST_ITB.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
